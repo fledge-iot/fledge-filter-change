@@ -79,9 +79,10 @@ int offset = 0;
 			evaluate(*reading); 	// A change might occur that causes the m_stopTime to be updated
 			struct timeval tm;
 			(*reading)->getUserTimestamp(&tm);
-			if ((tm.tv_sec < m_stopTime.tv_sec)
+			if ((tm.tv_sec > m_stopTime.tv_sec)
 					|| (tm.tv_sec == m_stopTime.tv_sec && tm.tv_usec > m_stopTime.tv_usec))
 			{
+				Logger::getLogger()->debug("Reached the end of the triggered time");
 				m_state = false;
 				readings->erase(readings->begin(), readings->begin() + offset);
 				return untriggeredIngest(readings, out);
@@ -120,6 +121,7 @@ int	offset = 0;	// Offset within the vector
 				// Remove the readings we have dealt with
 				readings->erase(readings->begin(), readings->begin() + offset);
 				sendPretrigger(out);
+				Logger::getLogger()->debug("Send the preTrigger buffer");
 				return triggeredIngest(readings, out);
 			}
 			bufferPretrigger(*reading);
@@ -302,7 +304,7 @@ const std::vector<Datapoint *>  datapoints = reading->getReadingData();
 
 	for (auto itr = datapoints.cbegin(); itr != datapoints.cend(); ++itr)
 	{
-		if ((*itr)->getName().compare(m_trigger))
+		if ((*itr)->getName().compare(m_trigger) == 0)
 		{
 			if ((*itr)->getData().getType() == DatapointValue::T_INTEGER)
 			{
@@ -335,7 +337,7 @@ const std::vector<Datapoint *>  datapoints = reading->getReadingData();
 					// Triggered set to state and the stop time
 					m_state = true;
 					gettimeofday(&m_stopTime, NULL);
-					m_stopTime.tv_usec += ((m_postTrigger & 1000) * 1000);
+					m_stopTime.tv_usec += ((m_postTrigger % 1000) * 1000);
 					m_stopTime.tv_sec += (m_postTrigger / 1000);
 					m_prevStrValue = strValue;
 				}
@@ -353,12 +355,16 @@ const std::vector<Datapoint *>  datapoints = reading->getReadingData();
 					// Triggered set to state and the stop time
 					m_state = true;
 					gettimeofday(&m_stopTime, NULL);
-					m_stopTime.tv_usec += ((m_postTrigger & 1000) * 1000);
+					m_stopTime.tv_usec += ((m_postTrigger % 1000) * 1000);
 					m_stopTime.tv_sec += (m_postTrigger / 1000);
 					m_prevValue = value;
 				}
 			}
 		}
+	}
+	if (m_state)
+	{
+		Logger::getLogger()->debug("Change filter %s has triggered", m_name.c_str());
 	}
 	return m_state;
 }
