@@ -323,7 +323,7 @@ const std::vector<Datapoint *>  datapoints = reading->getReadingData();
 			{
 				Logger::getLogger()->fatal(
 					"Filter %s can not monitor changes on the asset %s, datapoint %s, it is not a simple value",
-						m_name, m_asset.c_str(), m_trigger.c_str());
+						m_name.c_str(), m_asset.c_str(), m_trigger.c_str());
 			}
 			if (isString)
 			{
