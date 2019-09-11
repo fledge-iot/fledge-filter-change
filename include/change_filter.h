@@ -1,7 +1,7 @@
 #ifndef _CHANGE_FILTER_H
 #define _CHANGE_FILTER_H
 /*
- * FogLAMP change filter plugin.
+ * Fledge change filter plugin.
  *
  * Copyright (c) 2019 Dianomic Systems
  *
@@ -29,7 +29,7 @@
  * This filter only operates on a single asset, all other assets are passed
  * through the filter unaltered.
  */
-class ChangeFilter : public FogLampFilter {
+class ChangeFilter : public FledgeFilter {
 	public:
 		ChangeFilter(const std::string& filterName,
                         ConfigCategory& filterConfig,

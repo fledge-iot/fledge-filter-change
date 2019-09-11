@@ -1,5 +1,5 @@
 /*
- * FogLAMP "change" filter plugin.
+ * Fledge "change" filter plugin.
  *
  * Copyright (c) 2019 Dianomic Systems
  *
@@ -24,7 +24,7 @@ ChangeFilter::ChangeFilter(const std::string& filterName,
 			       ConfigCategory& filterConfig,
                                OUTPUT_HANDLE *outHandle,
                                OUTPUT_STREAM out) :
-                                  FogLampFilter(filterName, filterConfig,
+                                  FledgeFilter(filterName, filterConfig,
                                                 outHandle, out),
 				  m_name(filterConfig.getName()), m_state(false)
 {

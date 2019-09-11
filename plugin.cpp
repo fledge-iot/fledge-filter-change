@@ -1,5 +1,5 @@
 /*
- * FogLAMP "change" filter plugin.
+ * Fledge "change" filter plugin.
  *
  * Copyright (c) 2019 Dianomic Systems
  *
