@@ -39,8 +39,7 @@ const char *default_config = QUOTE({
 			"type": "string",
 			"default": "",
 		       	"order" : "1",
-		       	"displayName" : "Asset",
-		       	"mandatory": "true"
+		       	"displayName" : "Asset"
 		       	},
 		"trigger": {
 			"description": "The trigger datapoint used to trigger the sending of data",

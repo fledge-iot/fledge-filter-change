@@ -466,4 +466,15 @@ void ChangeFilter::handleConfig(const ConfigCategory& config)
 	{
 		Logger::getLogger()->fatal("No configuration items named rate and rateUnit");
 	}
+
+	if (m_asset.compare("") == 0)
+	{
+		Logger::getLogger()->warn("No value has been given for the asset to evaluate in the change filter. The filter will have no effect");
+		disableFilter();
+	}
+	if (m_trigger.compare("") == 0)
+	{
+		Logger::getLogger()->warn("No value has been given for the trigger datapoint to evaluate in the change filter. The filter will have no effect");
+		disableFilter();
+	}
 }
