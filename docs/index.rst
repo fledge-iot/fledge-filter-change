@@ -6,7 +6,7 @@ Change Filter
 
 The *fledge-filter-change* filter is used to only send information about an asset onward when a particular datapoint within that asset changes by more than a configured percentage. Data is sent for a period of time before and after the change in the monitored value. The amount of data to send before and after the change is configured in milliseconds, with a value for the pre-change time and one for the post-change time.
 
-It is possible to define a rate at which readings should be sent regardless of the monitored value changing. This provides an average o the values of the period defined, e.g. send a 1 minute average of the values every minute.
+It is possible to define a rate at which readings should be sent regardless of the monitored value changing. This provides an average of the values of the period defined, e.g. send a 1 minute average of the values every minute.
 
 This filter only operates on a single asset, all other assets are passed through the filter unaltered.
 
