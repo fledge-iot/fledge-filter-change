@@ -20,9 +20,9 @@ Change filters are added in the same way as any other filters.
 
   - Click *Next* and you will be presented with the following configuration page
 
-+----------+
-| |change| |
-+----------+
+    +----------+
+    | |change| |
+    +----------+
 
   - Enter the configuration for your change filter
 
