@@ -21,7 +21,7 @@
 
 
 #define FILTER_NAME "change"
-const char *default_config = QUOTE({
+static const char *default_config = QUOTE({
 		"plugin" : {
 			"description" : "Filter to collect dats either side of a value change",
 			"type" : "string", 
