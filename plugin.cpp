@@ -167,11 +167,14 @@ void plugin_ingest(PLUGIN_HANDLE handle,
 	vector<Reading *> out;
 	filter->ingest(((ReadingSet *)readingSet)->getAllReadingsPtr(), out);
 	const vector<Reading *>& readings = ((ReadingSet *)readingSet)->getAllReadings();
+	AssetTracker *assetTrackerInstance =  nullptr;
+	assetTrackerInstance = AssetTracker::getAssetTracker();
 	for (vector<Reading *>::const_iterator elem = readings.begin();
 						      elem != readings.end();
 						      ++elem)
 	{
-		AssetTracker::getAssetTracker()->addAssetTrackingTuple(filter->getName(), (*elem)->getAssetName(), string("Filter"));
+		if (assetTrackerInstance != nullptr)
+			AssetTracker::getAssetTracker()->addAssetTrackingTuple(filter->getName(), (*elem)->getAssetName(), string("Filter"));
 	}
 	delete (ReadingSet *)readingSet;
 
@@ -186,7 +189,8 @@ void plugin_ingest(PLUGIN_HANDLE handle,
 						      elem != readings2.end();
 						      ++elem)
 	{
-		AssetTracker::getAssetTracker()->addAssetTrackingTuple(filter->getName(), (*elem)->getAssetName(), string("Filter"));
+		if (assetTrackerInstance != nullptr)
+			AssetTracker::getAssetTracker()->addAssetTrackingTuple(filter->getName(), (*elem)->getAssetName(), string("Filter"));
 	}
 	filter->m_func(filter->m_data, newReadingSet);
 }
