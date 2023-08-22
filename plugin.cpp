@@ -174,7 +174,7 @@ void plugin_ingest(PLUGIN_HANDLE handle,
 						      ++elem)
 	{
 		if (assetTrackerInstance != nullptr)
-			AssetTracker::getAssetTracker()->addAssetTrackingTuple(filter->getName(), (*elem)->getAssetName(), string("Filter"));
+			assetTrackerInstance->addAssetTrackingTuple(filter->getName(), (*elem)->getAssetName(), string("Filter"));
 	}
 	delete (ReadingSet *)readingSet;
 
@@ -190,7 +190,7 @@ void plugin_ingest(PLUGIN_HANDLE handle,
 						      ++elem)
 	{
 		if (assetTrackerInstance != nullptr)
-			AssetTracker::getAssetTracker()->addAssetTrackingTuple(filter->getName(), (*elem)->getAssetName(), string("Filter"));
+			assetTrackerInstance->addAssetTrackingTuple(filter->getName(), (*elem)->getAssetName(), string("Filter"));
 	}
 	filter->m_func(filter->m_data, newReadingSet);
 }
