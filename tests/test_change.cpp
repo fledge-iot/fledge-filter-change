@@ -33,7 +33,7 @@ extern "C"
 
 TEST(CHANGE, configuration)
 {
-	// Test case : Configuration is wokring correctly
+	// Test case : Configuration is working correctly
 
 	PLUGIN_INFORMATION *info = plugin_info();
 	ConfigCategory *config = new ConfigCategory("change", info->config);
@@ -89,7 +89,7 @@ TEST(CHANGE, configuration)
 
 TEST(CHANGE, triggerNotMatched)
 {
-	// Test case : Trigger condtion didn't match
+	// Test case : Trigger condition didn't match
 	
 	PLUGIN_INFORMATION *info = plugin_info();
 	ConfigCategory *config = new ConfigCategory("change", info->config);
@@ -119,8 +119,6 @@ TEST(CHANGE, triggerNotMatched)
 	plugin_ingest(handle, (READINGSET *)readingSet1);
 	vector<Reading *> results1 = outReadings->getAllReadings();
 	sleep(2);
-	// On the scond itreration there will be more than 40% change from  15 to 11 That's why ignoring result1.size()
-	//ASSERT_EQ(results1.size(), 0); 
 
 	// Second Set of readings 
 	vector<Reading *> *readings2 = new vector<Reading *>;
@@ -140,7 +138,7 @@ TEST(CHANGE, triggerNotMatched)
 	plugin_ingest(handle, (READINGSET *)readingSet2);
 	vector<Reading *> results2 = outReadings->getAllReadings();
 	sleep(2);
-	ASSERT_EQ(results2.size(), 0); // trigger condtion didn't meet
+	ASSERT_EQ(results2.size(), 0); // trigger condition didn't meet
 
 	// Third Set of readings 
 	vector<Reading *> *readings3 = new vector<Reading *>;
@@ -153,7 +151,7 @@ TEST(CHANGE, triggerNotMatched)
 
 	plugin_ingest(handle, (READINGSET *)readingSet3);
 	vector<Reading *> results3 = outReadings->getAllReadings();
-	ASSERT_EQ(results3.size(), 0); // trigger condtion didn't meet
+	ASSERT_EQ(results3.size(), 0); // trigger condition didn't meet
 
 	sleep(1);
 	
@@ -168,7 +166,20 @@ TEST(CHANGE, triggerNotMatched)
 
 	plugin_ingest(handle, (READINGSET *)readingSet4);
 	vector<Reading *> results4 = outReadings->getAllReadings();
-	ASSERT_EQ(results4.size(), 0);  // trigger condtion didn't meet
+	ASSERT_EQ(results4.size(), 0);  // trigger condition didn't meet
+
+	//Memory cleanup
+	delete readings1;
+	delete readingSet1;
+
+	delete readings2;
+	delete readingSet2;
+
+	delete readings3;
+	delete readingSet3;
+
+	delete readings4;
+	delete readingSet4;
 }
 
 TEST(CHANGE, PrePostTriggerData)
@@ -203,8 +214,6 @@ TEST(CHANGE, PrePostTriggerData)
 	plugin_ingest(handle, (READINGSET *)readingSet1);
 	vector<Reading *> results1 = outReadings->getAllReadings();
 	sleep(2);
-	// On the scond itreration there will be more than 40% change from  15 to 11 That's why ignoring result1.size()
-	//ASSERT_EQ(results1.size(), 0); 
 
 	// Second Set of readings 
 	vector<Reading *> *readings2 = new vector<Reading *>;
@@ -224,7 +233,7 @@ TEST(CHANGE, PrePostTriggerData)
 	plugin_ingest(handle, (READINGSET *)readingSet2);
 	vector<Reading *> results2 = outReadings->getAllReadings();
 	sleep(2);
-	ASSERT_EQ(results2.size(), 0); // trigger condtion didn't meet
+	ASSERT_EQ(results2.size(), 0); // trigger condition didn't meet
 
 	// Third Set of readings 
 	vector<Reading *> *readings3 = new vector<Reading *>;
@@ -237,7 +246,7 @@ TEST(CHANGE, PrePostTriggerData)
 
 	plugin_ingest(handle, (READINGSET *)readingSet3);
 	vector<Reading *> results3 = outReadings->getAllReadings();
-	ASSERT_EQ(results3.size(), 3); // trigger condtion met - PreTrigger Data
+	ASSERT_EQ(results3.size(), 3); // trigger condition met - PreTrigger Data
 
 	sleep(1);
 	
@@ -253,9 +262,64 @@ TEST(CHANGE, PrePostTriggerData)
 	plugin_ingest(handle, (READINGSET *)readingSet4);
 	vector<Reading *> results4 = outReadings->getAllReadings();
 	ASSERT_EQ(results4.size(), 1);  // Post Trigger Data
+
+	//Memory cleanup
+	delete readings1;
+	delete readingSet1;
+
+	delete readings2;
+	delete readingSet2;
+
+	delete readings3;
+	delete readingSet3;
+
+	delete readings4;
+	delete readingSet4;
 }
 
+TEST(CHANGE, PrePostTriggerStringData)
+{
+	// Test case : String data point
 
+	PLUGIN_INFORMATION *info = plugin_info();
+	ConfigCategory *config = new ConfigCategory("change", info->config);
+	ASSERT_NE(config, (ConfigCategory *)NULL);
+	config->setItemsValueFromDefault();
+	config->setValue("asset", "test");
+	config->setValue("trigger", "test");
+	config->setValue("change", "40");
+	config->setValue("preTrigger", "1000");
+	config->setValue("postTrigger", "1000");
+	config->setValue("rate", "2");
+	config->setValue("rateUnit", "per second");
+	config->setValue("enable", "true");
+
+	ReadingSet *outReadings;
+	void *handle = plugin_init(config, &outReadings, Handler);
+
+	vector<Reading *> *readings = new vector<Reading *>;
+	std::string testValue2 = "Floor1";
+	DatapointValue dpv2(testValue2);
+	Datapoint *value2 = new Datapoint("test", dpv2);
+	Reading *in2 = new Reading("test", value2);
+	readings->push_back(in2);
+
+	std::string testValue3 = "Floor2";
+	DatapointValue dpv3(testValue3);
+	Datapoint *value3 = new Datapoint("test", dpv3);
+	Reading *in3 = new Reading("test", value3);
+	readings->push_back(in3);
+	ReadingSet *readingSet = new ReadingSet(readings);
+
+	plugin_ingest(handle, (READINGSET *)readingSet);
+	vector<Reading *> results = outReadings->getAllReadings();
+	ASSERT_EQ(results.size(), 2); // trigger condtion meet
+
+	//Memory cleanup
+	delete readings;
+	delete readingSet;
+
+}
 
 TEST(CHANGE, average)
 {
