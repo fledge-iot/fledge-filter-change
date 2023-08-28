@@ -313,7 +313,7 @@ TEST(CHANGE, PrePostTriggerStringData)
 
 	plugin_ingest(handle, (READINGSET *)readingSet);
 	vector<Reading *> results = outReadings->getAllReadings();
-	ASSERT_EQ(results.size(), 2); // trigger condtion meet
+	ASSERT_EQ(results.size(), 2); // trigger condition meet
 
 	//Memory cleanup
 	delete readings;
