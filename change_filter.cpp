@@ -26,8 +26,9 @@ ChangeFilter::ChangeFilter(const std::string& filterName,
                                OUTPUT_STREAM out) :
                                   FledgeFilter(filterName, filterConfig,
                                                 outHandle, out),
-				  m_name(filterConfig.getName()), m_state(false)
+				  m_name(filterConfig.getName()), m_state(false), m_prevValue(0.0)
 {
+	m_lastSent = { 0, 0 };
 	handleConfig(filterConfig);
 }
 
@@ -36,6 +37,8 @@ ChangeFilter::ChangeFilter(const std::string& filterName,
  */
 ChangeFilter::~ChangeFilter()
 {
+	for (auto& reading : m_buffer)
+		delete reading;
 }
 
 /**
