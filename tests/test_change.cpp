@@ -21,6 +21,7 @@ extern "C"
 	PLUGIN_HANDLE plugin_init(ConfigCategory *config,
 							  OUTPUT_HANDLE *outHandle,
 							  OUTPUT_STREAM output);
+	void plugin_shutdown(PLUGIN_HANDLE handle);
 	int called = 0;
 
 	void Handler(void *handle, READINGSET *readings)
@@ -79,11 +80,15 @@ TEST(CHANGE, configuration)
 	readings->push_back(in5);
 
 	ReadingSet *readingSet = new ReadingSet(readings);
+	delete readings;
 	plugin_ingest(handle, (READINGSET *)readingSet);
 
 	vector<Reading *> results = outReadings->getAllReadings();
 	ASSERT_EQ(results.size(), 5);
-	
+
+	delete outReadings;
+	plugin_shutdown(handle);
+	delete config;
 }
 
 
@@ -135,6 +140,7 @@ TEST(CHANGE, triggerNotMatched)
 	readings2.push_back(in3);
 	ReadingSet *readingSet2 = new ReadingSet(&readings2);
 
+	delete outReadings;	// Delete previous results
 	plugin_ingest(handle, (READINGSET *)readingSet2);
 	vector<Reading *> results2 = outReadings->getAllReadings();
 	sleep(2);
@@ -149,6 +155,7 @@ TEST(CHANGE, triggerNotMatched)
 	readings3.push_back(in4);
 	ReadingSet *readingSet3 = new ReadingSet(&readings3);
 
+	delete outReadings;	// Delete previous results
 	plugin_ingest(handle, (READINGSET *)readingSet3);
 	vector<Reading *> results3 = outReadings->getAllReadings();
 	ASSERT_EQ(results3.size(), 0); // trigger condition didn't meet
@@ -164,9 +171,14 @@ TEST(CHANGE, triggerNotMatched)
 	readings4.push_back(in5);
 	ReadingSet *readingSet4 = new ReadingSet(&readings4);
 
+	delete outReadings;	// Delete previous results
 	plugin_ingest(handle, (READINGSET *)readingSet4);
 	vector<Reading *> results4 = outReadings->getAllReadings();
 	ASSERT_EQ(results4.size(), 0);  // trigger condition didn't meet
+
+	delete outReadings;
+	plugin_shutdown(handle);
+	delete config;
 }
 
 TEST(CHANGE, PrePostTriggerData)
@@ -217,6 +229,7 @@ TEST(CHANGE, PrePostTriggerData)
 	readings2.push_back(in3);
 	ReadingSet *readingSet2 = new ReadingSet(&readings2);
 
+	delete outReadings;	// Delete previous results
 	plugin_ingest(handle, (READINGSET *)readingSet2);
 	vector<Reading *> results2 = outReadings->getAllReadings();
 	sleep(2);
@@ -231,6 +244,7 @@ TEST(CHANGE, PrePostTriggerData)
 	readings3.push_back(in4);
 	ReadingSet *readingSet3 = new ReadingSet(&readings3);
 
+	delete outReadings;	// Delete previous results
 	plugin_ingest(handle, (READINGSET *)readingSet3);
 	vector<Reading *> results3 = outReadings->getAllReadings();
 	ASSERT_EQ(results3.size(), 3); // trigger condition met - PreTrigger Data
@@ -246,9 +260,14 @@ TEST(CHANGE, PrePostTriggerData)
 	readings4.push_back(in5);
 	ReadingSet *readingSet4 = new ReadingSet(&readings4);
 
+	delete outReadings;	// Delete previous results
 	plugin_ingest(handle, (READINGSET *)readingSet4);
 	vector<Reading *> results4 = outReadings->getAllReadings();
 	ASSERT_EQ(results4.size(), 1);  // Post Trigger Data
+
+	delete outReadings;
+	plugin_shutdown(handle);
+	delete config;
 }
 
 TEST(CHANGE, PrePostTriggerData2)
@@ -299,6 +318,7 @@ TEST(CHANGE, PrePostTriggerData2)
 	readings2.push_back(in3);
 	ReadingSet *readingSet2 = new ReadingSet(&readings2);
 
+	delete outReadings;	// Delete previous results
 	plugin_ingest(handle, (READINGSET *)readingSet2);
 	vector<Reading *> results2 = outReadings->getAllReadings();
 	ASSERT_EQ(results2.size(), 0); // trigger condition didn't meet
@@ -313,6 +333,7 @@ TEST(CHANGE, PrePostTriggerData2)
 	readings3.push_back(in4);
 	ReadingSet *readingSet3 = new ReadingSet(&readings3);
 
+	delete outReadings;	// Delete previous results
 	plugin_ingest(handle, (READINGSET *)readingSet3);
 	vector<Reading *> results3 = outReadings->getAllReadings();
 	ASSERT_EQ(results3.size(), 3); // trigger condition met - PreTrigger Data
@@ -326,9 +347,14 @@ TEST(CHANGE, PrePostTriggerData2)
 	readings4.push_back(in5);
 	ReadingSet *readingSet4 = new ReadingSet(&readings4);
 
+	delete outReadings;	// Delete previous results
 	plugin_ingest(handle, (READINGSET *)readingSet4);
 	vector<Reading *> results4 = outReadings->getAllReadings();
 	ASSERT_EQ(results4.size(), 1);  // Post Trigger Data
+
+	delete outReadings;
+	plugin_shutdown(handle);
+	delete config;
 }
 
 TEST(CHANGE, PrePostTriggerStringData)
@@ -368,6 +394,10 @@ TEST(CHANGE, PrePostTriggerStringData)
 	plugin_ingest(handle, (READINGSET *)readingSet);
 	vector<Reading *> results = outReadings->getAllReadings();
 	ASSERT_EQ(results.size(), 2); // trigger condition meet
+
+	delete outReadings;
+	plugin_shutdown(handle);
+	delete config;
 }
 
 TEST(CHANGE, average)
